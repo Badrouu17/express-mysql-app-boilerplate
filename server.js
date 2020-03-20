@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 process.on('uncaughtException', err => {
@@ -8,21 +7,29 @@ process.on('uncaughtException', err => {
 });
 
 dotenv.config({ path: './config.env' });
+
 const app = require('./app');
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'admin',
+  database: 'batn-db'
+});
 
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
+connection.connect(err => {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
+  console.log('DB connected !! as id ' + connection.threadId);
+});
 
-mongoose
-  .connect(DB, {
-    dbName: 'natrous',
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  })
-  .then(() => console.log('DB connection successful!'));
+connection.query('SELECT * FROM category', function(error, results, fields) {
+  if (error) throw error;
+  // connected!
+  console.log(results);
+});
 
 const port = process.env.PORT || 3001;
 const server = app.listen(port, () => {
