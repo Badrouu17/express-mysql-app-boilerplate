@@ -13,13 +13,10 @@ exports.comparePasswords = async (newPassword, currentPassword) => {
   return await bcrypt.compare(newPassword, currentPassword);
 };
 
-exports.changedPasswordAfter = function(JWTTimestamp) {
-  if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(
-      this.passwordChangedAt.getTime() / 1000,
-      10
-    );
-
+exports.changedPasswordAfter = function(JWTTimestamp, passwordChangedAt) {
+  if (passwordChangedAt) {
+    const changedTimestamp = Date.parse(passwordChangedAt) / 1000;
+    console.log({ JWTTimestamp, changedTimestamp });
     return JWTTimestamp < changedTimestamp;
   }
 
