@@ -1,12 +1,8 @@
 const bcrypt = require('bcryptjs');
-const moment = require('moment');
+const crypto = require('crypto');
 
 exports.hashPassword = async password => {
-  const hashedPass = await bcrypt.hash(password, 12);
-  return {
-    hashedPass,
-    hashingTime: moment().format('YYYY-MM-DD h:mm:ss')
-  };
+  return await bcrypt.hash(password, 12);
 };
 
 exports.comparePasswords = async (newPassword, currentPassword) => {
@@ -27,14 +23,14 @@ exports.changedPasswordAfter = function(JWTTimestamp, passwordChangedAt) {
 exports.createPasswordResetToken = function() {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
-  this.passwordResetToken = crypto
+  const password_reset_token = crypto
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
 
   // console.log({ resetToken }, this.passwordResetToken);
 
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  const password_reset_expire = Date.now() + 10 * 60 * 1000;
 
-  return resetToken;
+  return { resetToken, password_reset_token, password_reset_expire };
 };
