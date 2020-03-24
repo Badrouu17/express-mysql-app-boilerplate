@@ -7,6 +7,9 @@ const {
   updateUserEmail,
   updateUserPhoto
 } = require('./../SQL/userQueries');
+const { multerUploads, dataUri } = require('./../utils/multer');
+const { uploader } = require('./../cloudinary');
+const photoResize = require('./../utils/sharp');
 
 exports.getMe = catchAsync(async (req, res, next) => {
   res.status(200).json({
@@ -61,4 +64,23 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     status: 'success',
     data: null
   });
+});
+
+exports.photoUploader = multerUploads;
+
+exports.photoUploaderToCloud = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    const bufferAfterResize = await photoResize(req.file.buffer);
+
+    const file = dataUri(req.file.originalname, bufferAfterResize).content;
+
+    const results = await uploader.upload(file);
+    console.log(results.url);
+    res.status(200).json({
+      messge: 'Your image has been uploded successfully to cloudinary',
+      data: {
+        image: results.url
+      }
+    });
+  }
 });
