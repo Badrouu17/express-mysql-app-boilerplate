@@ -41,3 +41,26 @@ exports.resetPassword = (id, pass, pca) => {
   users.password_changed_at = ${pca}
   WHERE users.user_id = ${id}`;
 };
+
+exports.updateUserEmail = (id, email) => {
+  return SQL`UPDATE users
+  SET email = ${email}
+  WHERE users.user_id = ${id}`;
+};
+
+exports.updateUserName = (id, name) => {
+  return SQL`UPDATE users
+  SET name = ${name}
+  WHERE users.user_id = ${id}`;
+};
+
+exports.updateUserPhoto = (id, photo) => {
+  return SQL`UPDATE users
+  SET photo = ${photo}
+  WHERE users.user_id = ${id}`;
+};
+
+exports.deleteUser = id => {
+  return SQL`DELETE FROM users
+  WHERE users.user_id = ${id}`;
+};

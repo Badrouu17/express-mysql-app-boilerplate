@@ -19,7 +19,7 @@ const {
   updateUserPassResetData,
   getUserByResetToken,
   resetPassword
-} = require('./../SQL/queries');
+} = require('../SQL/userQueries');
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
