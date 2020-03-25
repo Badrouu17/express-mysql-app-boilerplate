@@ -20,6 +20,31 @@ exports.getMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.photoUploader = multerUploads;
+
+exports.photoUploaderToCloud = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    const bufferAfterResize = await photoResize(req.file.buffer);
+
+    const file = dataUri(req.file.originalname, bufferAfterResize).content;
+
+    const results = await uploader.upload(file);
+    req.user.photo = results.url;
+  }
+  next();
+});
+
+exports.savePhotoInDb = catchAsync(async (req, res, next) => {
+  await db(updateUserPhoto(req.user.user_id, req.user.photo));
+
+  res.status(200).json({
+    messge: 'Your image has been uploded and saved successfully',
+    data: {
+      image: req.user.photo
+    }
+  });
+});
+
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach(el => {
@@ -41,7 +66,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   // 2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email');
-  if (req.file) filteredBody.photo = req.file.filename;
+  if (req.file) filteredBody.photo = req.user.photo;
 
   // 3) Update user in db
 
@@ -64,23 +89,4 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     status: 'success',
     data: null
   });
-});
-
-exports.photoUploader = multerUploads;
-
-exports.photoUploaderToCloud = catchAsync(async (req, res, next) => {
-  if (req.file) {
-    const bufferAfterResize = await photoResize(req.file.buffer);
-
-    const file = dataUri(req.file.originalname, bufferAfterResize).content;
-
-    const results = await uploader.upload(file);
-    console.log(results.url);
-    res.status(200).json({
-      messge: 'Your image has been uploded successfully to cloudinary',
-      data: {
-        image: results.url
-      }
-    });
-  }
 });

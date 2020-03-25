@@ -10,14 +10,15 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
+// Protect all routes after this middleware
+router.use(authController.protect);
+
 router.post(
   '/upload',
   userController.photoUploader,
-  userController.photoUploaderToCloud
+  userController.photoUploaderToCloud,
+  userController.savePhotoInDb
 );
-
-// Protect all routes after this middleware
-router.use(authController.protect);
 
 router.get('/isLogged', authController.isLoggedIn);
 
@@ -25,8 +26,8 @@ router.patch('/updateMyPassword', authController.updatePassword);
 router.get('/me', userController.getMe);
 router.patch(
   '/updateMe',
-  //   userController.uploadUserPhoto,
-  //   userController.resizeUserPhoto,
+  userController.photoUploader,
+  userController.photoUploaderToCloud,
   userController.updateMe
 );
 
