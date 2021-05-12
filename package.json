@@ -31,7 +31,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.4.16",
     "pug": "^2.0.4",
     "sharp": "^0.25.2",
     "sql-template-strings": "^2.2.2",
