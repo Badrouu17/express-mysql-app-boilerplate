@@ -35,7 +35,7 @@
     "pug": "^2.0.4",
     "sharp": "^0.25.2",
     "sql-template-strings": "^2.2.2",
-    "validator": "^10.11.0",
+    "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
